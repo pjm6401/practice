@@ -8,7 +8,7 @@ public class RateLimiterProperties {
     private boolean enabled = true; // Rate Limiter 활성화 여부
     private String keyPrefix = "global:rate_limit"; // Redis에 사용될 키의 접두사
     private long capacity = 3; // 토큰 버킷의 최대 용량
-    private long refillRate = 3; // 초당 채워지는 토큰 수 (RPS)
+    private long refillRate = 3; // 분당 채워지는 토큰 수 (RPS)
     private String[] includePaths = {"/api/process"}; // Rate Limiter를 적용할 경로 패턴 (기본값: 모든 경로)
     private String[] excludePaths = {"/api/status","/wait","/api/execute"}; // Rate Limiter 적용에서 제외할 경로 패턴
 
