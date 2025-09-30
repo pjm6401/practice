@@ -1,0 +1,3 @@
+# rate-limiter-middleware/src/main/resources/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
+com.project.ratelimiter.config.RateLimiterAutoConfiguration
+com.project.ratelimiter.config.RedisStringTemplateConfig

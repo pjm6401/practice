@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>대기 중...</title>
+    <style>
+        /* 스타일은 기존과 동일 */
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center; background-color: #f4f4f4; }
+        .container { padding: 40px; background-color: white; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h1 { color: #333; }
+        p { color: #666; font-size: 1.2em; }
+        .highlight { color: #007bff; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 id="title">요청 처리 대기 중</h1>
+    <p id="status-text">잠시만 기다려주세요. 현재 위치를 확인하고 있습니다...</p>
+    <div id="result-area" style="display:none;">
+        <h2>처리 완료!</h2>
+        <p id="result-text"></p>
+    </div>
+</div>
+
+<script>
+    // --- 여기가 핵심 변경점 ---
+    // URL 파라미터를 파싱하는 대신, Mustache가 렌더링한 ticket 변수를 직접 사용합니다.
+    const ticket = "{{ticket}}";
+
+    const statusText = document.getElementById('status-text');
+    const title = document.getElementById('title');
+    const resultArea = document.getElementById('result-area');
+    const resultText = document.getElementById('result-text');
+
+    async function executeActualRequest() {
+        // ... executeActualRequest 함수 내용은 기존과 동일 ...
+        try {
+            statusText.textContent = "실행 권한을 얻었습니다. 실제 작업을 요청합니다...";
+
+            const response = await fetch('/api/execute', { method: 'POST' });
+            const result = await response.text();
+
+            title.textContent = "모든 처리가 완료되었습니다!";
+            statusText.style.display = 'none';
+            resultText.textContent = `최종 결과: ${result}`;
+            resultArea.style.display = 'block';
+
+        } catch (error) {
+            console.error('Error executing request:', error);
+            statusText.textContent = "실제 작업 요청 중 오류가 발생했습니다.";
+        }
+    }
+
+    async function checkStatus() {
+        // ... checkStatus 함수 내용은 기존과 거의 동일 ...
+        if (!ticket) {
+            statusText.textContent = "유효한 티켓이 없습니다.";
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/status?ticket=${ticket}`);
+            const data = await response.json();
+
+            if (data.status === 'WAITING') {
+                statusText.innerHTML = `현재 대기 순위는 <span class="highlight">${data.rank}</span> 번 입니다. (총 ${data.totalWaiters}명 대기)`;
+                setTimeout(checkStatus, 3000);
+            } else if (data.status === 'COMPLETE') {
+                await executeActualRequest();
+            } else {
+                statusText.textContent = "대기열이 만료되었거나 티켓이 유효하지 않습니다.";
+            }
+        } catch (error) {
+            console.error('Error fetching status:', error);
+            statusText.textContent = "상태 확인 중 오류가 발생했습니다. 잠시 후 다시 시도합니다.";
+            setTimeout(checkStatus, 5000);
+        }
+    }
+
+    window.onload = checkStatus;
+</script>
+</body>
+</html>
