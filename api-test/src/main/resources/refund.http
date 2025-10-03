@@ -1,0 +1,8 @@
+### GET request to example server
+POST http://localhost:8080/api/refund
+Content-Type: application/json
+
+{
+  "orderId": 1001
+}
+

@@ -1,0 +1,10 @@
+### GET request to example server
+POST http://localhost:8080/api/pay
+Content-Type: application/json
+
+{
+  "orderId": 1001,
+  "userId" : 1,
+  "amount" : 1000
+}
+

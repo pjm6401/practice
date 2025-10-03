@@ -1,4 +1,5 @@
 rootProject.name = 'practice'
 include 'api-gateway'
+include 'api-test'
 include 'common'
 include 'rate-limiter-middleware'
