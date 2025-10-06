@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 public class Request {
     private Long orderId;
     private Long userId;
+    private Long merchantId;
     private int amount;
 }

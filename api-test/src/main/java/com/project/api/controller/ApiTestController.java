@@ -2,6 +2,7 @@ package com.project.api.controller;
 
 
 
+import com.project.api.service.PayService;
 import com.project.common.Order;
 import com.project.common.Request;
 import com.project.common.Response;
@@ -22,13 +23,30 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ApiTestController {
 
+    private final PayService payService;
+
     @PostMapping("/pay")
     public ResponseEntity<Response> pay(@RequestBody Request request) {
         Order order = new Order(request);
 
         System.out.println(order.getRequest().getOrderId() +" "+order.getRequest().getUserId() +" "+order.getRequest().getAmount() +" "+order.getStatus());
 
-        Response responseBody = new Response(order.getRequest().getOrderId(), order.getStatus());
+        payService.createPayment(order);
+
+        Response responseBody = new Response(order.getRequest().getOrderId(), order.getStatus()," Payment initiated");
+
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
+    }
+
+    @PostMapping("/paid")
+    public ResponseEntity<Response> paid(@RequestBody Request request) {
+        Order order = new Order(request);
+
+        order = payService.selectPayment(order);
+
+        System.out.println(order.getRequest().getOrderId() +" "+order.getRequest().getUserId() +" "+order.getRequest().getAmount() +" "+order.getStatus());
+
+        Response responseBody = new Response(order.getRequest().getOrderId(), order.getStatus()," Payment completed");
 
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
@@ -41,7 +59,7 @@ public class ApiTestController {
             status = OrderStatus.CANCELED;
         }
 
-        Response responseBody = new Response(request.getOrderId(), status);
+        Response responseBody = new Response(request.getOrderId(), status,"Cancellation completed");
 
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
@@ -54,7 +72,7 @@ public class ApiTestController {
             status = OrderStatus.CLOSE;
         }
 
-        Response responseBody = new Response(request.getOrderId(), status);
+        Response responseBody = new Response(request.getOrderId(), status,"Closure completed");
 
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
@@ -67,7 +85,7 @@ public class ApiTestController {
             status = OrderStatus.REFUND;
         }
 
-        Response responseBody = new Response(request.getOrderId(), status);
+        Response responseBody = new Response(request.getOrderId(), status,"Refund completed");
 
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
@@ -82,7 +100,7 @@ public class ApiTestController {
             status = OrderStatus.ERROR;
         }
 
-        Response responseBody = new Response(request.getOrderId(), status);
+        Response responseBody = new Response(request.getOrderId(), status,"Cancellation failed");
 
         return new ResponseEntity<>(responseBody, HttpStatus.CONFLICT);
     }

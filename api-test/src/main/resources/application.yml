@@ -6,4 +6,28 @@ spring:
     graphiql:
       enabled: true
       path: /graphiql
-    path: /graphql
+  # H2 데이터베이스 설정
+  h2:
+    console:
+      enabled: true      # H2 콘솔 사용 여부
+      path: /h2-console  # H2 콘솔 접속 경로
+
+  # 데이터 소스 설정
+  datasource:
+    url: jdbc:h2:mem:testdb  # 인메모리 모드로 실행, 데이터베이스 이름은 testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:                # 비밀번호는 설정하지 않아도 됨
+  sql:
+    init:
+      mode: always # 항상 data.sql, schema.sql을 실행하도록 설정
+  jpa.defer-datasource-initialization: true
+
+  # JPA 및 하이버네이트 설정
+  jpa:
+    hibernate:
+      ddl-auto: create   # (중요) 애플리케이션 실행 시점에 테이블을 자동으로 생성
+    properties:
+      hibernate:
+        format_sql: true # 실행되는 SQL 쿼리를 보기 좋게 포맷팅
+    show-sql: true       # 콘솔에 SQL 쿼리 출력

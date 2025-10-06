@@ -1,10 +1,75 @@
-### GET request to example server
+### user not found
 POST http://localhost:8080/api/pay
 Content-Type: application/json
 
 {
-  "orderId": 1001,
-  "userId" : 1,
+  "orderId": 1004,
+  "userId" : 101,
+  "merchantId": 9001,
   "amount" : 1000
 }
 
+### merchant not found
+POST http://localhost:8080/api/pay
+Content-Type: application/json
+
+{
+  "orderId": 1004,
+  "userId" : 1001,
+  "merchantId": 901,
+  "amount" : 1000
+}
+### success
+POST http://localhost:8080/api/pay
+Content-Type: application/json
+
+{
+"orderId": 1004,
+"userId" : 1001,
+"merchantId": 9001,
+"amount" : 1000
+}
+
+### success
+POST http://localhost:8080/api/paid
+Content-Type: application/json
+
+{
+  "orderId": 1004,
+  "userId" : 1001,
+  "merchantId": 9001,
+  "amount" : 1000
+}
+
+### order id not found
+POST http://localhost:8080/api/paid
+Content-Type: application/json
+
+{
+  "orderId": 1005,
+  "userId" : 1001,
+  "merchantId": 9001,
+  "amount" : 1000
+}
+
+### user not found
+POST http://localhost:8080/api/paid
+Content-Type: application/json
+
+{
+  "orderId": 1004,
+  "userId" : 100,
+  "merchantId": 9001,
+  "amount" : 1000
+}
+
+### merchant not found
+POST http://localhost:8080/api/paid
+Content-Type: application/json
+
+{
+  "orderId": 1005,
+  "userId" : 1001,
+  "merchantId": 901,
+  "amount" : 1000
+}

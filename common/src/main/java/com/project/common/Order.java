@@ -6,7 +6,6 @@ import lombok.Data;
 @Data
 public class Order {
     private Request request;
-
     private OrderStatus status; // 현재 상태
 
     public Order(Request request) {
