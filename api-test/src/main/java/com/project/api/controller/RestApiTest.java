@@ -23,9 +23,9 @@ public class RestApiTest {
                       @RequestBody Request request) {
         return "put id=" + id + ", body=" + request.toString();
     }
-
+    /*
     @DeleteMapping("/delete/{id}")
     public String delete(@PathVariable("id") Long id) {
         return "delete id=" + id;
-    }
+    }*/
 }

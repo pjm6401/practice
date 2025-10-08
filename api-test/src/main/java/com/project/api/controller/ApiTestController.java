@@ -1,20 +1,22 @@
 package com.project.api.controller;
 
-
-
+import com.project.api.entity.Pay;
+import com.project.api.entity.UserAccount;
 import com.project.api.service.PayService;
+import com.project.api.service.UserService;
 import com.project.common.Order;
 import com.project.common.Request;
 import com.project.common.Response;
 import com.project.common.status.OrderStatus;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Slf4j
@@ -24,9 +26,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class ApiTestController {
 
     private final PayService payService;
+    private final UserService userService;
 
     @PostMapping("/pay")
-    public ResponseEntity<Response> pay(@RequestBody Request request) {
+    public ResponseEntity<Response> pay(@Valid @RequestBody Request request) {
         Order order = new Order(request);
 
         System.out.println(order.getRequest().getOrderId() +" "+order.getRequest().getUserId() +" "+order.getRequest().getAmount() +" "+order.getStatus());
@@ -103,5 +106,39 @@ public class ApiTestController {
         Response responseBody = new Response(request.getOrderId(), status,"Cancellation failed");
 
         return new ResponseEntity<>(responseBody, HttpStatus.CONFLICT);
+    }
+
+    @GetMapping("/pays/{userId}")
+    public ResponseEntity<List<Response>> getPaymentsByUserId(@PathVariable Long userId,
+                                                         @RequestParam(required = false) OrderStatus status)
+    {
+        List<Pay> list = userService.findPaymentsByUserId(userId, status);
+        List<Response> responseList = new ArrayList<>();
+
+        for(Pay pay : list){
+            Response response = new Response(pay.getOrderId(), pay.getStatus(), "Payment record");
+            responseList.add(response);
+        }
+        return new ResponseEntity<>(responseList, HttpStatus.OK);
+    }
+    @GetMapping("/info/{userId}")
+    public ResponseEntity<UserAccount> getUserInfo(@PathVariable Long userId)
+    {
+
+        return new ResponseEntity<>(userService.findUserById(userId), HttpStatus.OK);
+    }
+
+    @PutMapping("/update/{userId}")
+    public ResponseEntity<UserAccount> updateUserInfo(@PathVariable Long userId, @RequestBody Request request)
+    {
+
+        return new ResponseEntity<>(userService.updateUserById(userId,request.getUserName()), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/{userId}")
+    public ResponseEntity<String> deleteUserInfo(@PathVariable Long userId)
+    {
+        userService.deleteUserById(userId);
+        return new ResponseEntity<>("Delete "+ userId, HttpStatus.OK);
     }
 }

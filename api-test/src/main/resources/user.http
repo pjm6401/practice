@@ -1,0 +1,18 @@
+
+GET http://localhost:8080/api/pays/1001
+###
+GET http://localhost:8080/api/pays/1001?status=PAID
+###
+GET http://localhost:8080/api/pays/1001?status=CREATED
+###
+GET http://localhost:8080/api/info/1001
+###
+DELETE http://localhost:8080/api/delete/1001
+###
+PUT http://localhost:8080/api/update/1001
+Content-Type: application/json
+
+{
+  "userId" : 1001,
+  "userName": "JEONGMIN"
+}

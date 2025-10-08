@@ -3,8 +3,12 @@ package com.project.api.repository;
 
 
 import com.project.api.entity.Pay;
+import com.project.common.status.OrderStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface PayRepository extends JpaRepository<Pay, Long> {
-    // findById(Long orderId) 메서드가 자동으로 제공됩니다.
+    List<Pay> findByUserAccount_UserId(Long userId);
+    List<Pay> findByUserAccount_UserIdAndStatus(Long userId, OrderStatus status);
 }
